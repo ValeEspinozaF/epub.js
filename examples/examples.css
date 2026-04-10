@@ -55,6 +55,23 @@ body {
     background: white;
 }
 
+
+#viewer.mobile {
+  max-width: 800px;
+  height: 100vh;
+  box-shadow: 0 0 4px #ccc;
+  border-radius: 5px;
+  padding: 0;
+  position: relative;
+  margin: 0 auto;
+  background: white url('ajax-loader.gif') center center no-repeat;
+  top: calc(50vh - 400px);
+}
+
+#viewer.mobile .epub-view > iframe {
+    background: white;
+}
+
 #prev {
   left: 0;
 }
