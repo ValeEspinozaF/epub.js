@@ -4,10 +4,10 @@ body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #333;
 
-  position: absolute;
-  height: 100%;
+  /* position: absolute;
+  height: 100%; */
   width: 100%;
-  min-height: 800px;
+  min-height: 100vh;
 }
 
 #title {
