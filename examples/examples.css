@@ -65,7 +65,7 @@ body {
   position: relative;
   margin: 0 auto;
   background: white url('ajax-loader.gif') center center no-repeat;
-  top: calc(50vh - 400px);
+  /* top: calc(50vh - 400px); */
 }
 
 #viewer.mobile .epub-view > iframe {
@@ -82,7 +82,13 @@ body {
 
 #toc {
   display: block;
-  margin: 10px auto;
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  background: white;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 @media (min-width: 1000px) {
