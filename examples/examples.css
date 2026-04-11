@@ -3,11 +3,13 @@ body {
   background: #fafafa;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #333;
-
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
   /* position: absolute;
   height: 100%; */
   width: 100%;
-  min-height: 100vh;
+  /* min-height: 100vh; */
 }
 
 #title {
@@ -57,6 +59,8 @@ body {
 
 
 #viewer.mobile {
+  flex: 1;
+  width: 100%;
   max-width: 800px;
   height: 100vh;
   box-shadow: 0 0 4px #ccc;
@@ -64,12 +68,18 @@ body {
   padding: 0;
   position: relative;
   margin: 0 auto;
-  background: white url('ajax-loader.gif') center center no-repeat;
+  background: blue url('ajax-loader.gif') center center no-repeat;
   /* top: calc(50vh - 400px); */
 }
 
 #viewer.mobile .epub-view > iframe {
     background: white;
+}
+
+#viewer iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
 }
 
 #prev {
@@ -81,13 +91,15 @@ body {
 }
 
 #toc {
+  flex: 0 0 50px;
   display: block;
   width: 100%;
   padding: 10px;
   font-size: 16px;
-  background: white;
-  position: sticky;
-  top: 0;
+  /* background: white; */
+  background: red;
+  /* position: sticky;
+  top: 0; */
   z-index: 10;
 }
 
