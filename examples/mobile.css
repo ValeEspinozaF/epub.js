@@ -155,13 +155,13 @@ body {
   #prev {
     left: 0;
     justify-content: flex-start;
-    padding-left: 0px;
+    padding-left: 2px;
   }
 
   #next {
     right: 0;
     justify-content: flex-end;
-    padding-right: 0px;
+    padding-right: 2px;
   }
 }
 
