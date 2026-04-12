@@ -62,12 +62,13 @@ body {
   flex: 1;
   width: 100%;
   max-width: 800px;
-  height: 100vh;
+  height: auto;
   box-shadow: 0 0 4px #ccc;
   border-radius: 5px;
   padding: 0;
   position: relative;
   margin: 0 auto;
+  z-index: 1;
   background: white url('ajax-loader.gif') center center no-repeat;
   /* top: calc(50vh - 400px); */
 }
@@ -90,16 +91,61 @@ body {
   right: 0;
 }
 
-#toc {
-  flex: 0 0 50px;
+#header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fdf9f5;
+  padding: 8px 10px;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+/* Left button */
+#tocBtn {
+  flex: 0 0 auto;
+  font-size: 18px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* Center title */
+#chapter_title {
+  flex: 1;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Right spacer (keeps title centered) */
+#spacer {
+  width: 24px; /* same visual weight as button */
+}
+
+#tocPanel {
+  position: fixed;
+  top: 45px;
+  left: 0;
+  width: 220px;
+  background: #fdf9f5;
+  border-right: 1px solid #ddd;
+  display: none;
+  z-index: 3000;
+}
+
+#tocPanel.open {
   display: block;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+}
+
+#toc {
   width: 100%;
   padding: 10px;
   font-size: 12px;
-  background: #f7eee4;
-  /* position: sticky;
-  top: 0; */
-  z-index: 10;
+  border: none;
+  background: transparent;
 }
 
 @media (min-width: 1000px) {
@@ -199,7 +245,7 @@ body {
     width: 400px;
 }
 
-#navigation {
+/* #navigation {
   width: 400px;
   height: 100vh;
   position: absolute;
@@ -283,7 +329,7 @@ body {
   -moz-transform: translate(-400px, 0);
   -ms-transform: translate(-400px, 0);
   transform: translate(-400px, 0);
-}
+} */
 
 svg {
   display: block;
