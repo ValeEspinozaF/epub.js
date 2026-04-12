@@ -51,11 +51,11 @@ body {
 }
 
 #prev {
-  left: 10px;
+  left: 0;
 }
 
 #next {
-  right: 10px;
+  right: 0;
 }
 
 #header {
@@ -145,14 +145,16 @@ body {
 
 @media (max-width: 600px) {
   .arrow {
-    font-size: 40px;
+    font-size: 64px;
   }
 }
 
-.arrow {
+/* .arrow {
   position: fixed;
   top: 50%;
-  /* margin-top: -32px; */
+  width: 30%; 
+  height: 100%;
+  margin-top: -32px;
   transform: translateY(-50%);
   font-size: 64px;
   color: #E2E2E2;
@@ -164,7 +166,23 @@ body {
   user-select: none;
   text-decoration: none;
   z-index: 4000;
+} */
+
+.arrow {
+  position: fixed;
+  top: 0;
+  width: 30%;
+  height: 100%;
+  z-index: 4000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  color: rgba(0,0,0,0.2);
+  text-decoration: none;
+  user-select: none;
 }
+
 
 .navlink {
   margin: 14px;
