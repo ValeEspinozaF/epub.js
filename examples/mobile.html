@@ -139,6 +139,7 @@
 
     });
 
+
     rendition.on("relocated", function(location){
       console.log(location);
 
@@ -158,6 +159,7 @@
       }
 
     });
+
 
     rendition.on("layout", function(layout) {
       let viewer = document.getElementById("viewer");
@@ -196,6 +198,27 @@
         }
       });
 		});
+
+    let arrowTimeout;
+
+    function showArrows() {
+      const arrows = document.querySelectorAll(".arrow");
+
+      arrows.forEach(a => a.classList.remove("hidden"));
+
+      clearTimeout(arrowTimeout);
+
+      arrowTimeout = setTimeout(() => {
+        arrows.forEach(a => a.classList.add("hidden"));
+      }, 2000); // 2 seconds
+    }
+
+    // Show on any touch or click
+    document.addEventListener("touchstart", showArrows, { passive: true });
+    document.addEventListener("click", showArrows);
+
+    // Show initially
+    showArrows();
 
   </script>
 
