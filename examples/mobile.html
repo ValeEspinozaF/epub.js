@@ -16,8 +16,15 @@
 <body>
   <div id="header">
     <button id="tocBtn">☰</button>
-    <div id="chapter_title">Chapter title</div>
-    <div id="spacer"></div>
+
+    <div id="header-text">
+      <div id="book-meta">
+        <span id="book-title"></span>
+        <span id="book-author"></span>
+      </div>
+      <h1 id="chapter_title"></h1>
+    </div>
+
   </div>
 
   <div id="tocPanel">
@@ -46,20 +53,11 @@
       spread: "none"
     });
 
+    book.loaded.metadata.then(function(meta){
+      document.getElementById("book-title").textContent = meta.title + " - ";
+      document.getElementById("book-author").textContent = meta.creator;
+    });
 
-    // rendition.hooks.content.register(function(contents) {
-    //   const doc = contents.document;
-
-    //   doc.addEventListener("touchend", function(e) {
-    //     if (tocIsOpen()) return;
-    //     showArrows();
-    //   }, { passive: true });
-
-    //   doc.addEventListener("click", function(e) {
-    //     if (tocIsOpen()) return;
-    //     showArrows();
-    //   });
-    // });
 
     rendition.themes.default({
         p: {
@@ -143,8 +141,6 @@
       document.addEventListener("keyup", keyListener, false);
 
     })
-
-    var title = document.getElementById("title");
 
     rendition.on("rendered", function(section){
       var current = book.navigation && book.navigation.get(section.href);
