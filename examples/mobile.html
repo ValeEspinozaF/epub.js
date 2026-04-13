@@ -88,6 +88,10 @@
         e.stopPropagation();              // ✅ ADD THIS BLOCK
       });
 
+      tocPanel.addEventListener("touchmove", function(e) {
+        e.stopPropagation();
+      });
+
       document.addEventListener("click", function(e) {
         if (!tocPanel.contains(e.target) && !tocBtn.contains(e.target)) {
           tocPanel.classList.remove("open");

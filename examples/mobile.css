@@ -106,12 +106,14 @@ body {
   top: 0px;
   left: 0;
   width: 220px;
-  height: 100%;
+  height: calc(100vh - 45px);
   background: #fafafa;
   border-right: 1px solid #ddd;
   display: none;
   z-index: 3000;
   padding-top: 20px;
+  overflow-y: auto; 
+  -webkit-overflow-scrolling: touch;
 }
 
 #tocPanel.open {
@@ -125,17 +127,18 @@ body {
   font-size: 12px;
   border: none;
   background: transparent;
+  padding-bottom: 40px;
 }
 
 #toc li {
   padding: 4px 0;
   font-size: 14px;
   cursor: pointer;
+  color: #bebebe;
 }
 
-#toc li:active {
+#toc li:hover {
   font-weight: bold;
-  color: #bebebe;
   /* opacity: 0.5; */
 }
 
