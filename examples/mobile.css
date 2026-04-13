@@ -68,8 +68,10 @@ body {
   justify-content: space-between;
   background: #fafafa;
   padding: 8px 10px;
+  box-shadow: 0 4px 4px #ccc;
   position: sticky;
   top: 0;
+  height: 20px;
   z-index: 5000;
 }
 
@@ -106,13 +108,14 @@ body {
   top: 0px;
   left: 0;
   width: 220px;
-  height: calc(100vh - 45px);
+  height: 100vh;
   background: #fafafa;
   border-right: 1px solid #ddd;
   display: none;
   z-index: 3000;
-  padding-top: 20px;
+  padding-top: 36px;
   overflow-y: auto; 
+  overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -123,18 +126,25 @@ body {
 
 #toc {
   width: 100%;
-  padding-left: 20px;
+  padding-left: 0px;
   font-size: 12px;
   border: none;
   background: transparent;
-  padding-bottom: 40px;
+  padding-bottom: 20px;
+  list-style: none;
 }
 
 #toc li {
-  padding: 4px 0;
+  padding: 4px 10px;
   font-size: 14px;
   cursor: pointer;
   color: #bebebe;
+  list-style: none;
+}
+
+#toc li.active {
+  /* color: #777; */
+  background-color: #ebebeb;
 }
 
 #toc li:hover {
@@ -143,23 +153,6 @@ body {
 }
 
 @media (min-width: 1000px) {
-  #viewer.spreads:after {
-    position: absolute;
-    width: 1px;
-    border-right: 1px #000 solid;
-    height: 90%;
-    z-index: 1;
-    left: 50%;
-    margin-left: -1px;
-    top: 5%;
-    opacity: .15;
-    box-shadow: -2px 0 15px rgba(0, 0, 0, 1);
-    content:  "";
-  }
-
-  #viewer.spreads.single:after {
-    display: none;
-  }
 
   #prev {
     left: 40px;
