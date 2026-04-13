@@ -137,6 +137,11 @@
         }
       }
 
+      rendition.getContents().forEach(function(contents) {
+        contents.document.addEventListener("touchend", showArrows, { passive: true });
+        contents.document.addEventListener("click", showArrows);
+      });
+
     });
 
 
