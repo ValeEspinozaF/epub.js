@@ -70,7 +70,7 @@ body {
   padding: 8px 10px;
   position: sticky;
   top: 0;
-  z-index: 20;
+  z-index: 5000;
 }
 
 /* Left button */
@@ -171,34 +171,14 @@ body {
   }
 }
 
-/* .arrow {
-  position: fixed;
-  top: 50%;
-  width: 30%; 
-  height: 100%;
-  margin-top: -32px;
-  transform: translateY(-50%);
-  font-size: 64px;
-  color: #E2E2E2;
-  font-family: arial, sans-serif;
-  font-weight: bold;
-  cursor: pointer;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  user-select: none;
-  text-decoration: none;
-  z-index: 4000;
-} */
-
 .arrow {
   position: fixed;
-  top: 0;
+  top: 45px;
   width: 30%;
-  height: 100%;
+  height: calc(100% - 45px);
   z-index: 4000;
   display: flex;
   align-items: center;
-  /* justify-content: center; */
   font-size: 40px;
   color: rgba(0,0,0,0.2);
   text-decoration: none;
@@ -210,6 +190,10 @@ body {
 .arrow.hidden {
   opacity: 0;
   /* pointer-events: none;  */
+}
+
+.arrow:active {
+  background: none;
 }
 
 
