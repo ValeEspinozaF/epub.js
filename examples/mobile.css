@@ -66,7 +66,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #fdf9f5;
+  background: #fafafa;
   padding: 8px 10px;
   position: sticky;
   top: 0;
@@ -78,8 +78,13 @@ body {
   flex: 0 0 auto;
   font-size: 18px;
   background: none;
-  border: none;
+  border: none; 
+  color: #bebebe;
+  font: inherit;
   cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  outline: none;
 }
 
 /* Center title */
@@ -88,6 +93,7 @@ body {
   text-align: center;
   font-size: 14px;
   font-weight: 500;
+  color: #bebebe;
 }
 
 /* Right spacer (keeps title centered) */
