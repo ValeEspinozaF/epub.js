@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,6 +12,7 @@
   <link rel="stylesheet" type="text/css" href="mobile.css">
 
 </head>
+
 <body>
   <div id="header">
     <button id="tocBtn">☰</button>
@@ -19,15 +21,17 @@
   </div>
 
   <div id="tocPanel">
-    <select id="toc"></select>
+    <ul id="toc"></ul>
   </div>
 
-
-
   <div id="viewer" class="mobile"></div>
-  <a id="prev" href="#prev" class="arrow">‹</a>
-  <a id="next" href="#next" class="arrow">›</a>
+  <!-- <a id="prev" href="#prev" class="arrow">‹</a>
+  <a id="next" href="#next" class="arrow">›</a> -->
 
+  <div id="prev" class="arrow">‹</div>
+  <div id="next" class="arrow">›</div>
+
+  
   <script>
     var params = URLSearchParams && new URLSearchParams(document.location.search.substring(1));
     var url = params && params.get("url") && decodeURIComponent(params.get("url"));
@@ -41,6 +45,21 @@
       height: "100%",
       spread: "none"
     });
+
+
+    // rendition.hooks.content.register(function(contents) {
+    //   const doc = contents.document;
+
+    //   doc.addEventListener("touchend", function(e) {
+    //     if (tocIsOpen()) return;
+    //     showArrows();
+    //   }, { passive: true });
+
+    //   doc.addEventListener("click", function(e) {
+    //     if (tocIsOpen()) return;
+    //     showArrows();
+    //   });
+    // });
 
     rendition.themes.default({
         p: {
@@ -61,8 +80,12 @@
 
     if (tocBtn && tocPanel) {
       tocBtn.addEventListener("click", function(e) {
+        e.stopPropagation(); 
         tocPanel.classList.toggle("open");
-        e.stopPropagation(); // prevent immediate close
+      });
+
+      tocPanel.addEventListener("click", function(e) {
+        e.stopPropagation();              // ✅ ADD THIS BLOCK
       });
 
       document.addEventListener("click", function(e) {
@@ -72,6 +95,11 @@
       });
     }
 
+
+    function tocIsOpen() {
+      return document.getElementById("tocPanel").classList.contains("open");
+    }
+
     rendition.display(currentSectionIndex);
 
     book.ready.then(function() {
@@ -79,17 +107,21 @@
       var next = document.getElementById("next");
 
       next.addEventListener("click", function(e){
+        if (tocIsOpen()) return;
         book.package.metadata.direction === "rtl" ? rendition.prev() : rendition.next();
         e.preventDefault();
       }, false);
 
       var prev = document.getElementById("prev");
       prev.addEventListener("click", function(e){
+        if (tocIsOpen()) return;
         book.package.metadata.direction === "rtl" ? rendition.next() : rendition.prev();
         e.preventDefault();
       }, false);
 
       var keyListener = function(e){
+
+        if (tocIsOpen()) return;
 
         // Left Key
         if ((e.keyCode || e.which) == 37) {
@@ -114,20 +146,6 @@
       var current = book.navigation && book.navigation.get(section.href);
 
       if (current) {
-        var $select = document.getElementById("toc");
-        var $selected = $select.querySelector("option[selected]");
-        if ($selected) {
-          $selected.removeAttribute("selected");
-        }
-
-        var $options = $select.querySelectorAll("option");
-        for (var i = 0; i < $options.length; ++i) {
-          // let selected = $options[i].getAttribute("ref") === current.href;
-          let selected = $options[i].value === current.href;
-          if (selected) {
-            $options[i].setAttribute("selected", "");
-          }
-        }
 
         var titleEl = document.getElementById("chapter_title");
         if (titleEl) {
@@ -135,11 +153,25 @@
         }
       }
 
-      rendition.getContents().forEach(function(contents) {
-        contents.document.addEventListener("touchend", showArrows, { passive: true });
-        contents.document.addEventListener("click", showArrows);
+      var items = document.querySelectorAll("#toc li");
+      items.forEach(li => li.classList.remove("active"));
+
+      items.forEach(li => {
+        if (li.textContent === current.label) {
+          li.classList.add("active");
+        }
       });
 
+      rendition.getContents().forEach(function(contents) {
+        const doc = contents.document;
+
+        doc.removeEventListener("touchend", showArrows);
+        doc.removeEventListener("click", showArrows);
+
+        doc.addEventListener("touchend", showArrows, { passive: true });
+        doc.addEventListener("click", showArrows);
+
+      });
     });
 
 
@@ -185,26 +217,26 @@
       var select = document.getElementById("toc");
 
 			toc.forEach(function(chapter) {
-				var option = document.createElement("option");
-				option.textContent = chapter.label;
-        option.value = chapter.href;
 
-        select.appendChild(option);
+        var li = document.createElement("li");
+        li.textContent = chapter.label;
+
+        li.addEventListener("click", function(e) {
+          e.stopPropagation();
+          rendition.display(chapter.href);
+          document.getElementById("tocPanel").classList.remove("open");
+        });
+
+        select.appendChild(li);
 			});
-
-      select.addEventListener("change", function() {
-        rendition.display(this.value);
-
-        var tocPanel = document.getElementById("tocPanel");
-        if (tocPanel) {
-          tocPanel.classList.remove("open");
-        }
-      });
 		});
 
     let arrowTimeout;
 
-    function showArrows() {
+    function showArrows(e) {
+
+      if (tocIsOpen()) return;
+
       const arrows = document.querySelectorAll(".arrow");
 
       arrows.forEach(a => a.classList.remove("hidden"));
@@ -217,11 +249,16 @@
     }
 
     // Show on any touch or click
-    document.addEventListener("touchend", showArrows, { passive: true });
-    document.addEventListener("click", showArrows);
+    // document.addEventListener("touchend", showArrows, { passive: true });
+    // document.addEventListener("click", showArrows);
+
+    // const viewer = document.getElementById("viewer");
+
+    // viewer.addEventListener("touchend", showArrows, { passive: true });
+    // viewer.addEventListener("click", showArrows);
 
     // Show initially
-    showArrows();
+    showArrows({ target: document.body });
 
   </script>
 

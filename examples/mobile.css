@@ -97,19 +97,21 @@ body {
 }
 
 /* Right spacer (keeps title centered) */
-#spacer {
-  width: 24px; /* same visual weight as button */
-}
+/* #spacer {
+  width: 24px;
+} */
 
 #tocPanel {
   position: fixed;
-  top: 45px;
+  top: 0px;
   left: 0;
   width: 220px;
-  background: #fdf9f5;
+  height: 100%;
+  background: #fafafa;
   border-right: 1px solid #ddd;
   display: none;
   z-index: 3000;
+  padding-top: 20px;
 }
 
 #tocPanel.open {
@@ -119,10 +121,22 @@ body {
 
 #toc {
   width: 100%;
-  padding: 10px;
+  padding-left: 20px;
   font-size: 12px;
   border: none;
   background: transparent;
+}
+
+#toc li {
+  padding: 4px 0;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+#toc li:active {
+  font-weight: bold;
+  color: #bebebe;
+  /* opacity: 0.5; */
 }
 
 @media (min-width: 1000px) {
@@ -176,7 +190,7 @@ body {
   top: 45px;
   width: 30%;
   height: calc(100% - 45px);
-  z-index: 4000;
+  z-index: 2000;
   display: flex;
   align-items: center;
   font-size: 40px;
@@ -205,13 +219,13 @@ body {
   color: #ccc;
 }
 
-.arrow:hover, .navlink:hover {
+/* .arrow:hover, .navlink:hover {
   color: #777;
 }
 
 .arrow:active, .navlink:hover {
   color: #000;
-}
+} */
 
 #book-wrapper {
   width: 480px;
