@@ -91,6 +91,7 @@ body {
   width: 40%;
   height: calc(100% - 45px);
   transform: translate(-50%, -50%);
+  background: none;
   font-size: 64px;
   z-index: 2000;
   opacity: 0;
