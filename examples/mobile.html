@@ -28,11 +28,9 @@
         </div>
         <h1 id="chapter_title"></h1>
       </div>
-      <button id="centerToggle"> 
-        <span class="material-symbols-outlined" style="font-size:16px;">open_in_full</span>
-      </button>
-      <div id="centerToggle"></div>
     </div>
+
+    <button id="centerToggle"></button>
 
     <div id="tocPanel">
       <ul id="toc"></ul>
@@ -245,77 +243,15 @@
     } 
 
 
-    var centerToggle = document.getElementById("centerToggle");
-
-    centerToggle.addEventListener("click", function(e) {
-      e.stopPropagation();
-      toggleFullscreen();
-    });
-
-    function toggleFullscreen() {
-      document.getElementById("app").classList.toggle("fullscreen");
+    function toggleHeader() {
+      document.getElementById("app").classList.toggle("hide-header");
     }
 
+    document.getElementById("centerToggle").addEventListener("click", function(e) {
+      e.stopPropagation();
+      toggleHeader();
+    });
 
-    // function isCenterTap(x, y) {
-    //   const w = window.innerWidth;
-    //   const h = window.innerHeight;
-
-    //   return (
-    //     x > w * 0.3 &&
-    //     x < w * 0.7 &&
-    //     y > h * 0.3 &&
-    //     y < h * 0.7
-    //   );
-    // }
-
-
-    // function toggleFullscreen() {
-    //   const app = document.getElementById("app");
-
-    //   // detect mobile Safari-ish
-    //   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
-    //   if (!isMobile && app.requestFullscreen) {
-    //     if (document.fullscreenElement) {
-    //       document.exitFullscreen();
-    //     } else {
-    //       app.requestFullscreen();
-    //     }
-    //   } else {
-    //     // ALWAYS fallback on mobile
-    //     app.classList.toggle("fullscreen");
-    //   }
-    // }
-
-    // rendition.hooks.content.register(function(contents) {
-    //   const doc = contents.document;
-      
-    //   doc.addEventListener("touchend", function(e) {
-    //     if (tocIsOpen()) return;
-
-    //     const touch = e.changedTouches[0];
-    //     const x = touch.clientX;
-    //     const y = touch.clientY;
-
-    //     if (isCenterTap(x, y)) {
-    //       toggleFullscreen();
-    //     } else {
-    //       showArrows();
-    //     }
-
-    //   }, { passive: true });
-
-    //   doc.addEventListener("click", function(e) {
-    //     if (tocIsOpen()) return;
-
-    //     if (isCenterTap(e.clientX, e.clientY)) {
-    //       toggleFullscreen();
-    //     } else {
-    //       showArrows();
-    //     }
-    //   });
-    // });
 
     showArrows({ target: document.body });
 
