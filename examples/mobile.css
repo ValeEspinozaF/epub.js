@@ -307,12 +307,14 @@ html, body, #app {
   display: none;
 }
 
-.hide-header #centerToggle {
+/* .hide-header #centerToggle {
   position: fixed;
   top: 10px;
   right: 10px;
   z-index: 10000;
-}
+} */
+
+
 
 .navlink {
   margin: 14px;
