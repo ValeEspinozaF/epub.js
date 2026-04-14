@@ -14,31 +14,32 @@
 </head>
 
 <body>
-  <div id="header">
-    <button id="tocBtn">☰</button>
+  <div id="app"></div>
+    <div id="header">
+      <button id="tocBtn">☰</button>
 
-    <div id="header-text">
-      <div id="book-meta">
-        <span id="book-title"></span>
-        <span id="book-author"></span>
+      <div id="header-text">
+        <div id="book-meta">
+          <span id="book-title"></span>
+          <span id="book-author"></span>
+        </div>
+        <h1 id="chapter_title"></h1>
       </div>
-      <h1 id="chapter_title"></h1>
+
     </div>
 
+    <div id="tocPanel">
+      <ul id="toc"></ul>
+    </div>
+
+    <div id="viewer" class="mobile"></div>
+    <!-- <a id="prev" href="#prev" class="arrow">‹</a>
+    <a id="next" href="#next" class="arrow">›</a> -->
+
+    <div id="prev" class="arrow">‹</div>
+    <div id="next" class="arrow">›</div>
+
   </div>
-
-  <div id="tocPanel">
-    <ul id="toc"></ul>
-  </div>
-
-  <div id="viewer" class="mobile"></div>
-  <!-- <a id="prev" href="#prev" class="arrow">‹</a>
-  <a id="next" href="#next" class="arrow">›</a> -->
-
-  <div id="prev" class="arrow">‹</div>
-  <div id="next" class="arrow">›</div>
-
-  
   <script>
     var params = URLSearchParams && new URLSearchParams(document.location.search.substring(1));
     var url = params && params.get("url") && decodeURIComponent(params.get("url"));
@@ -83,7 +84,7 @@
       });
 
       tocPanel.addEventListener("click", function(e) {
-        e.stopPropagation();              // ✅ ADD THIS BLOCK
+        e.stopPropagation();
       });
 
       tocPanel.addEventListener("touchmove", function(e) {
@@ -247,6 +248,60 @@
         arrows.forEach(a => a.classList.add("hidden"));
       }, 2000); // 2 seconds
     }
+
+    function isCenterTap(x, y) {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+
+      return (
+        x > w * 0.3 &&
+        x < w * 0.7 &&
+        y > h * 0.3 &&
+        y < h * 0.7
+      );
+    }
+
+    
+    function toggleFullscreen() {
+      const app = document.getElementById("app") || document.documentElement;
+
+      if (document.fullscreenElement) {
+        document.exitFullscreen();
+      } else if (app.requestFullscreen) {
+        app.requestFullscreen();
+      } else {
+        app.classList.toggle("fullscreen"); // mobile fallback
+      }
+    }
+
+    rendition.hooks.content.register(function(contents) {
+      const doc = contents.document;
+      
+      doc.addEventListener("touchend", function(e) {
+        if (tocIsOpen()) return;
+
+        const touch = e.changedTouches[0];
+        const x = touch.clientX;
+        const y = touch.clientY;
+
+        if (isCenterTap(x, y)) {
+          toggleFullscreen();
+        } else {
+          showArrows();
+        }
+
+      }, { passive: true });
+
+      doc.addEventListener("click", function(e) {
+        if (tocIsOpen()) return;
+
+        if (isCenterTap(e.clientX, e.clientY)) {
+          toggleFullscreen();
+        } else {
+          showArrows();
+        }
+      });
+    });
 
     // Show on any touch or click
     // document.addEventListener("touchend", showArrows, { passive: true });
