@@ -14,7 +14,7 @@
 </head>
 
 <body>
-  <div id="app"></div>
+  <div id="app">
     <div id="header">
       <button id="tocBtn">☰</button>
 
@@ -163,16 +163,16 @@
         }
       });
 
-      rendition.getContents().forEach(function(contents) {
-        const doc = contents.document;
+      // rendition.getContents().forEach(function(contents) {
+      //   const doc = contents.document;
 
-        doc.removeEventListener("touchend", showArrows);
-        doc.removeEventListener("click", showArrows);
+      //   doc.removeEventListener("touchend", showArrows);
+      //   doc.removeEventListener("click", showArrows);
 
-        doc.addEventListener("touchend", showArrows, { passive: true });
-        doc.addEventListener("click", showArrows);
+      //   doc.addEventListener("touchend", showArrows, { passive: true });
+      //   doc.addEventListener("click", showArrows);
 
-      });
+      // });
     });
 
 
@@ -261,16 +261,22 @@
       );
     }
 
-    
-    function toggleFullscreen() {
-      const app = document.getElementById("app") || document.documentElement;
 
-      if (document.fullscreenElement) {
-        document.exitFullscreen();
-      } else if (app.requestFullscreen) {
-        app.requestFullscreen();
+    function toggleFullscreen() {
+      const app = document.getElementById("app");
+
+      // detect mobile Safari-ish
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+      if (!isMobile && app.requestFullscreen) {
+        if (document.fullscreenElement) {
+          document.exitFullscreen();
+        } else {
+          app.requestFullscreen();
+        }
       } else {
-        app.classList.toggle("fullscreen"); // mobile fallback
+        // ALWAYS fallback on mobile
+        app.classList.toggle("fullscreen");
       }
     }
 
@@ -303,16 +309,6 @@
       });
     });
 
-    // Show on any touch or click
-    // document.addEventListener("touchend", showArrows, { passive: true });
-    // document.addEventListener("click", showArrows);
-
-    // const viewer = document.getElementById("viewer");
-
-    // viewer.addEventListener("touchend", showArrows, { passive: true });
-    // viewer.addEventListener("click", showArrows);
-
-    // Show initially
     showArrows({ target: document.body });
 
   </script>
