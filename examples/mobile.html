@@ -10,13 +10,16 @@
   <script src="https://unpkg.com/epubjs/dist/epub.min.js"></script>
 
   <link rel="stylesheet" type="text/css" href="mobile.css">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
 
 </head>
 
 <body>
   <div id="app">
     <div id="header">
-      <button id="tocBtn">☰</button>
+      <button id="tocBtn">
+        <span class="material-symbols-outlined" style="font-size:16px;">menu</span>
+      </button>
 
       <div id="header-text">
         <div id="book-meta">
@@ -25,7 +28,9 @@
         </div>
         <h1 id="chapter_title"></h1>
       </div>
-
+      <button id="fullscreenBtn"> 
+        <span class="material-symbols-outlined" style="font-size:16px;">open_in_full</span>
+      </button>
     </div>
 
     <div id="tocPanel">
@@ -103,12 +108,12 @@
       return document.getElementById("tocPanel").classList.contains("open");
     }
 
+
     rendition.display(currentSectionIndex);
 
     book.ready.then(function() {
 
       var next = document.getElementById("next");
-
       next.addEventListener("click", function(e){
         if (tocIsOpen()) return;
         book.package.metadata.direction === "rtl" ? rendition.prev() : rendition.next();
@@ -121,6 +126,7 @@
         book.package.metadata.direction === "rtl" ? rendition.next() : rendition.prev();
         e.preventDefault();
       }, false);
+
 
       var keyListener = function(e){
 
@@ -143,6 +149,7 @@
 
     })
 
+
     rendition.on("rendered", function(section){
       var current = book.navigation && book.navigation.get(section.href);
 
@@ -162,17 +169,6 @@
           li.classList.add("active");
         }
       });
-
-      // rendition.getContents().forEach(function(contents) {
-      //   const doc = contents.document;
-
-      //   doc.removeEventListener("touchend", showArrows);
-      //   doc.removeEventListener("click", showArrows);
-
-      //   doc.addEventListener("touchend", showArrows, { passive: true });
-      //   doc.addEventListener("click", showArrows);
-
-      // });
     });
 
 
@@ -235,11 +231,9 @@
     let arrowTimeout;
 
     function showArrows(e) {
-
       if (tocIsOpen()) return;
 
       const arrows = document.querySelectorAll(".arrow");
-
       arrows.forEach(a => a.classList.remove("hidden"));
 
       clearTimeout(arrowTimeout);
@@ -247,67 +241,89 @@
       arrowTimeout = setTimeout(() => {
         arrows.forEach(a => a.classList.add("hidden"));
       }, 2000); // 2 seconds
-    }
+    } 
 
-    function isCenterTap(x, y) {
-      const w = window.innerWidth;
-      const h = window.innerHeight;
 
-      return (
-        x > w * 0.3 &&
-        x < w * 0.7 &&
-        y > h * 0.3 &&
-        y < h * 0.7
-      );
-    }
+    var fullscreenBtn = document.getElementById("fullscreenBtn");
 
+    fullscreenBtn.addEventListener("click", function(e) {
+      e.stopPropagation();
+      toggleFullscreen();
+    });
 
     function toggleFullscreen() {
       const app = document.getElementById("app");
 
-      // detect mobile Safari-ish
-      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
-      if (!isMobile && app.requestFullscreen) {
-        if (document.fullscreenElement) {
-          document.exitFullscreen();
-        } else {
-          app.requestFullscreen();
-        }
+      if (document.fullscreenElement) {
+        document.exitFullscreen();
+      } else if (app.requestFullscreen) {
+        app.requestFullscreen();
       } else {
-        // ALWAYS fallback on mobile
+
         app.classList.toggle("fullscreen");
       }
     }
 
-    rendition.hooks.content.register(function(contents) {
-      const doc = contents.document;
+
+    // function isCenterTap(x, y) {
+    //   const w = window.innerWidth;
+    //   const h = window.innerHeight;
+
+    //   return (
+    //     x > w * 0.3 &&
+    //     x < w * 0.7 &&
+    //     y > h * 0.3 &&
+    //     y < h * 0.7
+    //   );
+    // }
+
+
+    // function toggleFullscreen() {
+    //   const app = document.getElementById("app");
+
+    //   // detect mobile Safari-ish
+    //   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+    //   if (!isMobile && app.requestFullscreen) {
+    //     if (document.fullscreenElement) {
+    //       document.exitFullscreen();
+    //     } else {
+    //       app.requestFullscreen();
+    //     }
+    //   } else {
+    //     // ALWAYS fallback on mobile
+    //     app.classList.toggle("fullscreen");
+    //   }
+    // }
+
+    // rendition.hooks.content.register(function(contents) {
+    //   const doc = contents.document;
       
-      doc.addEventListener("touchend", function(e) {
-        if (tocIsOpen()) return;
+    //   doc.addEventListener("touchend", function(e) {
+    //     if (tocIsOpen()) return;
 
-        const touch = e.changedTouches[0];
-        const x = touch.clientX;
-        const y = touch.clientY;
+    //     const touch = e.changedTouches[0];
+    //     const x = touch.clientX;
+    //     const y = touch.clientY;
 
-        if (isCenterTap(x, y)) {
-          toggleFullscreen();
-        } else {
-          showArrows();
-        }
+    //     if (isCenterTap(x, y)) {
+    //       toggleFullscreen();
+    //     } else {
+    //       showArrows();
+    //     }
 
-      }, { passive: true });
+    //   }, { passive: true });
 
-      doc.addEventListener("click", function(e) {
-        if (tocIsOpen()) return;
+    //   doc.addEventListener("click", function(e) {
+    //     if (tocIsOpen()) return;
 
-        if (isCenterTap(e.clientX, e.clientY)) {
-          toggleFullscreen();
-        } else {
-          showArrows();
-        }
-      });
-    });
+    //     if (isCenterTap(e.clientX, e.clientY)) {
+    //       toggleFullscreen();
+    //     } else {
+    //       showArrows();
+    //     }
+    //   });
+    // });
 
     showArrows({ target: document.body });
 

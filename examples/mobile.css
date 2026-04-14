@@ -71,7 +71,8 @@ body {
 } */
 
 #tocBtn,
-#settingsBtn {
+#settingsBtn,
+#fullscreenBtn {
   flex: 0 0 auto;
   font-size: 18px;
   background: none;
@@ -84,15 +85,24 @@ body {
   outline: none;
 }
 
+.small-icon {
+  font-size: 10px;
+}
+
 #tocBtn:hover {
   color: #777;
 }
 
-
-
-/* Right spacer (keeps title centered) */
-/* #spacer {
-  width: 24px;
+/* #fullscreenBtn {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  width: auto;
+  height: auto;
+  font-size: 18px;
+  background: rgba(255,255,255,0.7);
+  padding: 6px 10px;
+  border-radius: 6px;
 } */
 
 #tocPanel {
