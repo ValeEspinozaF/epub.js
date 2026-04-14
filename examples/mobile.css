@@ -85,9 +85,39 @@ body {
   outline: none;
 }
 
-.small-icon {
-  font-size: 10px;
+#centerToggle {
+  position: fixed;
+  top: calc(50% + 22px);
+  left: 50%;
+  width: 40%;
+  height: calc(100% - 45px);
+  transform: translate(-50%, -50%);
+  font-size: 64px;
+  z-index: 2000;
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
+
+
+.arrow {
+  position: fixed;
+  top: 45px;
+  width: 30%;
+  height: calc(100% - 45px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  font-size: 40px;
+  color: rgba(0,0,0,0.2);
+  text-decoration: none;
+  user-select: none;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+/* .small-icon {
+  font-size: 10px;
+} */
 
 #tocBtn:hover {
   color: #777;
