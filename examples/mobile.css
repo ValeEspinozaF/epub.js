@@ -71,8 +71,7 @@ body {
 } */
 
 #tocBtn,
-#settingsBtn,
-#fullscreenBtn {
+#settingsBtn {
   flex: 0 0 auto;
   font-size: 18px;
   background: none;
@@ -98,42 +97,14 @@ body {
   transition: opacity 0.3s ease;
 }
 
-
-.arrow {
-  position: fixed;
-  top: 45px;
-  width: 30%;
-  height: calc(100% - 45px);
-  z-index: 2000;
-  display: flex;
-  align-items: center;
-  font-size: 40px;
-  color: rgba(0,0,0,0.2);
-  text-decoration: none;
-  user-select: none;
-  opacity: 1;
-  transition: opacity 0.3s ease;
+#centerToggle:active {
+  background: none;
 }
 
-/* .small-icon {
-  font-size: 10px;
-} */
 
 #tocBtn:hover {
   color: #777;
 }
-
-/* #fullscreenBtn {
-  position: fixed;
-  bottom: 10px;
-  right: 10px;
-  width: auto;
-  height: auto;
-  font-size: 18px;
-  background: rgba(255,255,255,0.7);
-  padding: 6px 10px;
-  border-radius: 6px;
-} */
 
 #tocPanel {
   position: fixed;
