@@ -207,6 +207,32 @@
       this.book.destroy();
     });
 
+    function resolveChapterTarget(href) {
+      if (!href) {
+        return href;
+      }
+
+      // Most books resolve directly from nav href.
+      if (book.spine.get(href)) {
+        return href;
+      }
+
+      // Some books have nav hrefs relative to the nav document directory.
+      var navPath = book.packaging && book.packaging.navPath;
+      if (navPath) {
+        var navDirIndex = navPath.lastIndexOf("/");
+        var navDir = navDirIndex > -1 ? navPath.slice(0, navDirIndex + 1) : "";
+        var relHref = href.replace(/^\.\//, "").replace(/^\/+/, "");
+        var resolvedHref = navDir + relHref;
+
+        if (book.spine.get(resolvedHref)) {
+          return resolvedHref;
+        }
+      }
+
+      return href;
+    }
+
 
     book.loaded.navigation.then(function(toc){
 
@@ -219,7 +245,10 @@
 
         li.addEventListener("click", function(e) {
           e.stopPropagation();
-          rendition.display(chapter.href);
+          var target = resolveChapterTarget(chapter.href);
+          rendition.display(target).catch(function(err) {
+            console.warn("Unable to display chapter target:", chapter.href, "->", target, err);
+          });
           document.getElementById("tocPanel").classList.remove("open");
         });
 
