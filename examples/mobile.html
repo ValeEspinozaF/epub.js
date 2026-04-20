@@ -51,7 +51,7 @@
 
     // Load the opf
     // var book = ePub(url || "https://archive.org/download/TheMartian_201808/The%20Martian.epub");
-    var book = ePub(url || "_books/the-martian.epub");
+    var book = ePub(url || "_books/artemis.epub");
     var rendition = book.renderTo("viewer", {
       width: "100%",
       height: "100%",
@@ -72,13 +72,12 @@
         },
         body: {
             "font-family": "Arial, sans-serif",
-            "font-size": "10px",
             "line-height": "1.3"
         }
     });
 
     // Enforce a consistent base size across EPUBs with different internal CSS.
-    rendition.themes.fontSize("10px");
+    rendition.themes.fontSize("12px");
 
 
     var tocBtn = document.getElementById("tocBtn");
