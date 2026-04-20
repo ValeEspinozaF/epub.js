@@ -43,6 +43,15 @@
     <div id="prev" class="arrow">‹</div>
     <div id="next" class="arrow">›</div>
 
+    <div id="footer">
+      <div id="progress-bar-container">
+        <div id="progress-bar"></div>
+      </div>
+      <div id="page-counter">
+        <span id="current-page">0</span> / <span id="total-pages">0</span>
+      </div>
+    </div>
+
   </div>
   <script>
     var params = URLSearchParams && new URLSearchParams(document.location.search.substring(1));
@@ -148,6 +157,11 @@
       rendition.on("keyup", keyListener);
       document.addEventListener("keyup", keyListener, false);
 
+      // Generate locations for progress tracking
+      book.locations.generate().then(function() {
+        console.log("Locations generated:", book.locations.length());
+      });
+
     })
 
 
@@ -193,6 +207,31 @@
         prev.style.visibility = "visible";
       }
 
+      // Update progress bar and page counter
+      if (location && location.start) {
+        var percentage = location.start.percentage || 0;
+
+        // Use percentage for progress bar (works immediately)
+        var progressBar = document.getElementById("progress-bar");
+        if (progressBar) {
+          progressBar.style.width = (percentage * 100) + "%";
+        }
+
+        var currentPageEl = document.getElementById("current-page");
+        var totalPagesEl = document.getElementById("total-pages");
+        var displayed = location.start.displayed;
+
+        if (currentPageEl && totalPagesEl) {
+          // Display real rendered pages for the current section.
+          if (displayed && displayed.total > 0) {
+            currentPageEl.textContent = displayed.page;
+            totalPagesEl.textContent = displayed.total;
+          } else {
+            currentPageEl.textContent = "-";
+            totalPagesEl.textContent = "-";
+          }
+        }
+      }
     });
 
 
