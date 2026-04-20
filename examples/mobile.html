@@ -77,7 +77,7 @@
     });
 
     // Enforce a consistent base size across EPUBs with different internal CSS.
-    rendition.themes.fontSize("12px");
+    rendition.themes.fontSize("14px");
 
 
     var tocBtn = document.getElementById("tocBtn");
@@ -306,6 +306,18 @@
 
     function toggleHeader() {
       document.getElementById("app").classList.toggle("hide-header");
+
+      // Header visibility changes available reading height; force repagination.
+      requestAnimationFrame(function() {
+        requestAnimationFrame(function() {
+          var viewer = document.getElementById("viewer");
+          if (viewer) {
+            rendition.resize(viewer.clientWidth, viewer.clientHeight);
+          } else {
+            rendition.resize();
+          }
+        });
+      });
     }
 
     document.getElementById("centerToggle").addEventListener("click", function(e) {
