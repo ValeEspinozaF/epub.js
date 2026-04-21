@@ -4,6 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>EPUB.js Mobile Library</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.5/jszip.min.js"></script>
+  <script src="https://unpkg.com/epubjs/dist/epub.min.js"></script>
   <style>
     :root {
       --bg: #f3efe7;
@@ -150,7 +152,7 @@
   </main>
 
   <script>
-    (function () {
+    (async function () {
       var files = [
         "alice.epub",
         "artemis.epub",
@@ -168,18 +170,61 @@
         return "mobile.html?url=" + encodeURIComponent(path);
       }
 
-      files.forEach(function (fileName) {
+      function formatLabel(meta, fileName) {
+        var title = meta && meta.title ? String(meta.title).trim() : "";
+        var creator = meta && meta.creator ? String(meta.creator).trim() : "";
+
+        if (title && creator) {
+          return title + " - " + creator;
+        }
+
+        if (title) {
+          return title;
+        }
+
+        return fileName;
+      }
+
+      async function loadBookEntry(fileName) {
         var path = "_books/" + fileName;
+        var label = fileName;
+
+        if (typeof ePub === "function") {
+          var book = ePub(path);
+          try {
+            var meta = await book.loaded.metadata;
+            label = formatLabel(meta, fileName);
+          } catch (error) {
+            label = fileName;
+          } finally {
+            try {
+              book.destroy();
+            } catch (destroyError) {
+              // Ignore cleanup errors from incomplete loads.
+            }
+          }
+        }
+
+        return {
+          fileName: fileName,
+          path: path,
+          label: label
+        };
+      }
+
+      var entries = await Promise.all(files.map(loadBookEntry));
+
+      entries.forEach(function (entry) {
 
         var option = document.createElement("option");
-        option.value = path;
-        option.textContent = fileName;
+        option.value = entry.path;
+        option.textContent = entry.label;
         picker.appendChild(option);
 
         var quick = document.createElement("a");
         quick.className = "quick-link";
-        quick.href = buildTarget(path);
-        quick.textContent = "Open " + fileName;
+        quick.href = buildTarget(entry.path);
+        quick.textContent = "Open " + entry.label;
         quickList.appendChild(quick);
       });
 

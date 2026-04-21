@@ -10,7 +10,7 @@
   <script src="https://unpkg.com/epubjs/dist/epub.min.js"></script>
 
   <link rel="stylesheet" type="text/css" href="mobile.css">
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" rel="stylesheet" />
 
 </head>
 
@@ -18,7 +18,7 @@
   <div id="app">
     <div id="header">
       <button id="tocBtn">
-        <span class="material-symbols-outlined" style="font-size:16px;">menu</span>
+        <span class="material-symbols-rounded header-icon">menu</span>
       </button>
 
       <div id="header-text">
@@ -28,6 +28,10 @@
         </div>
         <h1 id="chapter_title"></h1>
       </div>
+
+      <button id="homeBtn" aria-label="Go to library">
+        <span class="material-symbols-rounded header-icon">home</span>
+      </button>
     </div>
 
     <button id="centerToggle"></button>
@@ -90,7 +94,15 @@
 
 
     var tocBtn = document.getElementById("tocBtn");
+    var homeBtn = document.getElementById("homeBtn");
     var tocPanel = document.getElementById("tocPanel");
+
+    if (homeBtn) {
+      homeBtn.addEventListener("click", function(e) {
+        e.stopPropagation();
+        window.location.href = "index.html";
+      });
+    }
 
     if (tocBtn && tocPanel) {
       tocBtn.addEventListener("click", function(e) {
