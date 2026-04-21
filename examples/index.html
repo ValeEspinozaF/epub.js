@@ -8,13 +8,14 @@
   <script src="https://unpkg.com/epubjs/dist/epub.min.js"></script>
   <style>
     :root {
-      --bg: #f3efe7;
-      --ink: #1f1f1f;
-      --muted: #6a665e;
-      --card: #fffdf8;
-      --edge: #cec6b8;
-      --accent: #0f766e;
-      --accent-2: #115e59;
+      --bg: #fafafa;
+      --ink: #333;
+      --muted: #777;
+      --card: #ffffff;
+      --edge: #ddd;
+      --edge-2: #ebebeb;
+      --accent: #bebebe;
+      --accent-2: #999;
     }
 
     * {
@@ -24,11 +25,9 @@
     body {
       margin: 0;
       min-height: 100vh;
-      font-family: "Georgia", "Times New Roman", serif;
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
       color: var(--ink);
-      background:
-        radial-gradient(circle at 20% 10%, #fff5da 0%, rgba(255, 245, 218, 0) 45%),
-        linear-gradient(180deg, #f7f3eb 0%, #f0eadf 100%);
+      background: var(--bg);
       display: grid;
       place-items: center;
       padding: 24px;
@@ -39,21 +38,21 @@
       max-width: 760px;
       background: var(--card);
       border: 1px solid var(--edge);
-      border-radius: 16px;
-      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.08);
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
       overflow: hidden;
     }
 
     .hero {
       padding: 28px 24px 14px;
-      border-bottom: 1px dashed var(--edge);
-      background: linear-gradient(135deg, rgba(15, 118, 110, 0.12), rgba(255, 255, 255, 0));
+      border-bottom: 1px solid var(--edge);
+      background: var(--bg);
     }
 
     .hero h1 {
       margin: 0;
       font-size: clamp(1.5rem, 1.2rem + 2vw, 2.2rem);
-      letter-spacing: 0.02em;
+      letter-spacing: 0.01em;
     }
 
     .hero p {
@@ -71,7 +70,7 @@
       display: block;
       font-size: 0.9rem;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.05em;
       margin-bottom: 8px;
       color: var(--muted);
     }
@@ -86,14 +85,14 @@
     select {
       padding: 12px;
       border: 1px solid var(--edge);
-      background: #ffffff;
+      background: #fff;
       color: var(--ink);
     }
 
     button {
       margin-top: 12px;
       padding: 12px;
-      border: 1px solid var(--accent-2);
+      border: 1px solid var(--accent);
       background: var(--accent);
       color: #fff;
       cursor: pointer;
@@ -102,13 +101,21 @@
 
     button:hover {
       background: var(--accent-2);
+      border-color: var(--accent-2);
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      background: var(--edge-2);
+      border-color: var(--edge);
+      color: #9b9b9b;
     }
 
     .quick-list {
       margin-top: 18px;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 10px;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
     }
 
     .quick-link {
@@ -116,15 +123,56 @@
       color: var(--ink);
       background: #fff;
       border: 1px solid var(--edge);
-      border-radius: 10px;
-      padding: 10px 12px;
-      font-size: 0.95rem;
-      transition: transform 0.12s ease, border-color 0.12s ease;
+      border-radius: 8px;
+      padding: 10px;
+      transition: background-color 0.12s ease, border-color 0.12s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
     }
 
     .quick-link:hover {
-      transform: translateY(-1px);
-      border-color: var(--accent);
+      background: var(--bg);
+      border-color: var(--accent-2);
+    }
+
+    .quick-cover {
+      width: 100%;
+      aspect-ratio: 2 / 3;
+      object-fit: cover;
+      border-radius: 6px;
+      border: 1px solid var(--edge);
+      background: #f5f5f5;
+      display: block;
+    }
+
+    .quick-cover-fallback {
+      width: 100%;
+      aspect-ratio: 2 / 3;
+      border-radius: 6px;
+      border: 1px solid var(--edge);
+      background: #f5f5f5;
+      color: #9b9b9b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .quick-title {
+      width: 100%;
+      text-align: center;
+      font-size: 0.9rem;
+      line-height: 1.3;
+      min-height: 2.2em;
+      display: -webkit-box;
+      line-clamp: 2;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
 
     .hint {
@@ -153,21 +201,79 @@
 
   <script>
     (async function () {
-      var files = [
-        "alice.epub",
-        "artemis.epub",
-        "hatchet.epub",
-        "project-hail-mary.epub",
-        "the-martian.epub",
-        "moby-dick.opf"
-      ];
-
       var picker = document.getElementById("book-picker");
       var openMobile = document.getElementById("open-mobile");
       var quickList = document.getElementById("quick-list");
+      var hint = document.querySelector(".hint");
 
       function buildTarget(path) {
         return "mobile.html?url=" + encodeURIComponent(path);
+      }
+
+      function extractFileName(href) {
+        if (!href) {
+          return "";
+        }
+
+        var cleaned = href.split("#")[0].split("?")[0];
+        if (!cleaned || cleaned === "../" || cleaned === "./") {
+          return "";
+        }
+
+        if (cleaned.slice(-1) === "/") {
+          return "";
+        }
+
+        if (/^https?:\/\//i.test(cleaned) || cleaned.indexOf("mailto:") === 0) {
+          return "";
+        }
+
+        cleaned = decodeURIComponent(cleaned);
+
+        if (cleaned.indexOf("_books/") === 0) {
+          cleaned = cleaned.slice("_books/".length);
+        }
+
+        var slash = cleaned.lastIndexOf("/");
+        var fileName = slash > -1 ? cleaned.slice(slash + 1) : cleaned;
+
+        if (!/\.(epub|opf)$/i.test(fileName)) {
+          return "";
+        }
+
+        return fileName;
+      }
+
+      async function discoverBookFiles() {
+        var response = await fetch("_books/");
+        if (!response.ok) {
+          throw new Error("Cannot read _books/ directory");
+        }
+
+        var html = await response.text();
+        var doc = new DOMParser().parseFromString(html, "text/html");
+        var links = doc.querySelectorAll("a[href]");
+        var seen = {};
+        var files = [];
+
+        links.forEach(function (link) {
+          var fileName = extractFileName(link.getAttribute("href"));
+          if (!fileName) {
+            return;
+          }
+
+          var key = fileName.toLowerCase();
+          if (!seen[key]) {
+            seen[key] = true;
+            files.push(fileName);
+          }
+        });
+
+        files.sort(function (a, b) {
+          return a.localeCompare(b);
+        });
+
+        return files;
       }
 
       function formatLabel(meta, fileName) {
@@ -188,14 +294,26 @@
       async function loadBookEntry(fileName) {
         var path = "_books/" + fileName;
         var label = fileName;
+        var title = fileName;
+        var coverUrl = "";
 
         if (typeof ePub === "function") {
           var book = ePub(path);
           try {
             var meta = await book.loaded.metadata;
             label = formatLabel(meta, fileName);
+            title = meta && meta.title ? String(meta.title).trim() : fileName;
+            if (!title) {
+              title = fileName;
+            }
+            try {
+              coverUrl = await book.coverUrl();
+            } catch (coverError) {
+              coverUrl = "";
+            }
           } catch (error) {
             label = fileName;
+            title = fileName;
           } finally {
             try {
               book.destroy();
@@ -208,11 +326,46 @@
         return {
           fileName: fileName,
           path: path,
-          label: label
+          label: label,
+          title: title,
+          coverUrl: coverUrl
         };
       }
 
+      function renderNoBooks(message) {
+        picker.innerHTML = "";
+        quickList.innerHTML = "";
+        openMobile.disabled = true;
+
+        var option = document.createElement("option");
+        option.value = "";
+        option.textContent = "No readable ebooks found in _books";
+        picker.appendChild(option);
+
+        if (hint) {
+          hint.textContent = message;
+        }
+      }
+
+      var files = [];
+      try {
+        files = await discoverBookFiles();
+      } catch (error) {
+        renderNoBooks("Could not list _books automatically. Serve examples with directory listing enabled.");
+        return;
+      }
+
+      if (!files.length) {
+        renderNoBooks("_books contains no .epub or .opf files.");
+        return;
+      }
+
       var entries = await Promise.all(files.map(loadBookEntry));
+      openMobile.disabled = false;
+
+      if (hint) {
+        hint.textContent = "Found " + entries.length + " ebooks in _books.";
+      }
 
       entries.forEach(function (entry) {
 
@@ -224,7 +377,25 @@
         var quick = document.createElement("a");
         quick.className = "quick-link";
         quick.href = buildTarget(entry.path);
-        quick.textContent = "Open " + entry.label;
+
+        if (entry.coverUrl) {
+          var cover = document.createElement("img");
+          cover.className = "quick-cover";
+          cover.src = entry.coverUrl;
+          cover.alt = entry.title + " cover";
+          quick.appendChild(cover);
+        } else {
+          var fallback = document.createElement("div");
+          fallback.className = "quick-cover-fallback";
+          fallback.textContent = "No cover";
+          quick.appendChild(fallback);
+        }
+
+        var quickTitle = document.createElement("div");
+        quickTitle.className = "quick-title";
+        quickTitle.textContent = entry.title;
+        quick.appendChild(quickTitle);
+
         quickList.appendChild(quick);
       });
 
