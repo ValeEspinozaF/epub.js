@@ -178,14 +178,18 @@ html, body, #app {
 #app {
   display: flex;
   flex-direction: column;
-  height: 100vh; /* 🔥 important */
+  min-height: 100vh;
+  height: 100vh;
+  min-height: 100dvh;
+  height: 100dvh;
 }
 
 #viewer.mobile {
-  flex: 1;
+  flex: 1 1 auto;
   width: 100%;
   /* max-width: 800px; */
-  height: calc(100dvh - 50px);
+  height: auto;
+  min-height: 0;
   box-shadow: 0 0 4px #ccc;
   border-radius: 5px;
   padding: 0;
