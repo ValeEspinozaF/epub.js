@@ -79,16 +79,19 @@
 
 
     rendition.themes.default({
-      p: {
-        "text-indent": "0 !important",
-        "margin-top": "0 !important",
-        "margin-bottom": "0.8em !important"
+      "*": {
+        "font-family": "Arial, sans-serif !important",
+        "font-size": "inherit !important",
+        "line-height": "inherit !important"
       },
-      "body, p, div, span, li": {
-        "font-family": "Arial, sans-serif !important"
+    
+      "html": {
+        "font-size": "18px !important"
       },
-      body: {
-        "line-height": "1.4"
+    
+      "body": {
+        "font-size": "1rem !important",
+        "line-height": "1.5 !important"
       }
     });
 
