@@ -147,6 +147,26 @@
       display: block;
     }
 
+    .folder-cover {
+      width: 100%;
+      aspect-ratio: 2 / 3;
+      border-radius: 6px;
+      border: 1px solid var(--edge);
+      background: #f5f5f5;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 2px;
+      overflow: hidden;
+    }
+
+    .folder-cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
     .quick-cover-fallback {
       width: 100%;
       aspect-ratio: 2 / 3;
@@ -333,6 +353,7 @@
       }
 
       var topEntries = [];
+      var currentFolderName = null;
       try {
         topEntries = await discoverBookFiles();
       } catch (error) {
@@ -354,6 +375,34 @@
       async function renderEntries(entries) {
         quickList.innerHTML = '';
         picker.innerHTML = '';
+
+        // Update hint based on context
+        if (currentFolderName) {
+          if (hint) hint.textContent = 'Found ' + entries.length + ' items in examples/_books/' + currentFolderName + '.';
+        } else {
+          if (hint) hint.textContent = 'Found ' + entries.length + ' items in examples/_books.';
+        }
+
+        // If viewing a folder, show a back tile
+        if (currentFolderName) {
+          var backLink = document.createElement('a');
+          backLink.className = 'quick-link';
+          backLink.href = '#';
+          var backCover = document.createElement('div');
+          backCover.className = 'quick-cover-fallback';
+          backCover.textContent = 'Back';
+          backLink.appendChild(backCover);
+          var backTitle = document.createElement('div');
+          backTitle.className = 'quick-title';
+          backTitle.textContent = 'Back to library';
+          backLink.appendChild(backTitle);
+          backLink.addEventListener('click', function (e) {
+            e.preventDefault();
+            currentFolderName = null;
+            renderEntries(topEntries);
+          });
+          quickList.appendChild(backLink);
+        }
 
         for (const item of entries) {
           if (!item) continue;
@@ -408,6 +457,7 @@
               e.preventDefault();
               // inner files from manifest are expected in item.files with {name,path}
               if (Array.isArray(item.files) && item.files.length) {
+                currentFolderName = item.name;
                 const inner = item.files.map(function (f) { return { type: 'file', name: f.name, path: './' + f.path }; });
                 renderEntries(inner);
               } else {

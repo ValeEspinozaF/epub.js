@@ -1,32 +1,49 @@
 [
   {
-    "type": "file",
-    "name": "artemis.epub",
-    "path": "_books/artemis.epub"
-  },
-  {
     "type": "dir",
-    "name": "gary",
-    "path": "_books/gary",
+    "name": "Andy Weir",
+    "path": "_books/Andy Weir",
     "files": [
       {
-        "name": "Brian's Hunt - Paulsen_ Gary.epub",
-        "path": "_books/gary/Brian's Hunt - Paulsen_ Gary.epub"
+        "name": "artemis.epub",
+        "path": "_books/Andy Weir/artemis.epub"
       },
       {
-        "name": "Brian's Return - Paulsen_ Gary.epub",
-        "path": "_books/gary/Brian's Return - Paulsen_ Gary.epub"
+        "name": "project-hail-mary.epub",
+        "path": "_books/Andy Weir/project-hail-mary.epub"
       },
       {
-        "name": "Brian's Winter - Paulsen_ Gary.epub",
-        "path": "_books/gary/Brian's Winter - Paulsen_ Gary.epub"
+        "name": "the-martian.epub",
+        "path": "_books/Andy Weir/the-martian.epub"
       }
     ]
   },
   {
-    "type": "file",
-    "name": "Hatchet - Paulsen_ Gary.epub",
-    "path": "_books/Hatchet - Paulsen_ Gary.epub"
+    "type": "dir",
+    "name": "Gary Paulsen",
+    "path": "_books/Gary Paulsen",
+    "files": [
+      {
+        "name": "Brian's Hunt - Paulsen_ Gary.epub",
+        "path": "_books/Gary Paulsen/Brian's Hunt - Paulsen_ Gary.epub"
+      },
+      {
+        "name": "Brian's Return - Paulsen_ Gary.epub",
+        "path": "_books/Gary Paulsen/Brian's Return - Paulsen_ Gary.epub"
+      },
+      {
+        "name": "Brian's Winter - Paulsen_ Gary.epub",
+        "path": "_books/Gary Paulsen/Brian's Winter - Paulsen_ Gary.epub"
+      },
+      {
+        "name": "Hatchet - Paulsen_ Gary.epub",
+        "path": "_books/Gary Paulsen/Hatchet - Paulsen_ Gary.epub"
+      },
+      {
+        "name": "River - Paulsen_ Gary.epub",
+        "path": "_books/Gary Paulsen/River - Paulsen_ Gary.epub"
+      }
+    ]
   },
   {
     "type": "file",
@@ -35,22 +52,7 @@
   },
   {
     "type": "file",
-    "name": "project-hail-mary.epub",
-    "path": "_books/project-hail-mary.epub"
-  },
-  {
-    "type": "file",
-    "name": "River - Paulsen_ Gary.epub",
-    "path": "_books/River - Paulsen_ Gary.epub"
-  },
-  {
-    "type": "file",
     "name": "seveneves.epub",
     "path": "_books/seveneves.epub"
-  },
-  {
-    "type": "file",
-    "name": "the-martian.epub",
-    "path": "_books/the-martian.epub"
   }
 ]
