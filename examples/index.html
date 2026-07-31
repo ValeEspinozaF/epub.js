@@ -390,7 +390,7 @@
           backLink.href = '#';
           var backCover = document.createElement('div');
           backCover.className = 'quick-cover-fallback';
-          backCover.textContent = 'Back';
+          backCover.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="36" height="36" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>';
           backLink.appendChild(backCover);
           var backTitle = document.createElement('div');
           backTitle.className = 'quick-title';
@@ -443,10 +443,40 @@
             quick.className = 'quick-link';
             quick.href = '#';
 
-            var fallback = document.createElement('div');
-            fallback.className = 'quick-cover-fallback';
-            fallback.textContent = 'Folder';
-            quick.appendChild(fallback);
+            // try to load up to 4 covers from the inner files (manifest)
+            var covers = [];
+            if (Array.isArray(item.files) && item.files.length) {
+              for (var j = 0; j < Math.min(4, item.files.length); j++) {
+                try {
+                  var f = item.files[j];
+                  var bi = await loadBookEntry({ fileName: f.name, path: './' + f.path });
+                  covers.push(bi.coverUrl || null);
+                } catch (err) {
+                  covers.push(null);
+                }
+              }
+            }
+
+            if (covers.length) {
+              var folderCover = document.createElement('div');
+              folderCover.className = 'folder-cover';
+              for (var k = 0; k < 4; k++) {
+                var img = document.createElement('img');
+                if (covers[k]) {
+                  img.src = covers[k];
+                  img.alt = item.name + ' cover';
+                } else {
+                  img.style.background = '#f5f5f5';
+                }
+                folderCover.appendChild(img);
+              }
+              quick.appendChild(folderCover);
+            } else {
+              var fallback = document.createElement('div');
+              fallback.className = 'quick-cover-fallback';
+              fallback.textContent = 'Folder';
+              quick.appendChild(fallback);
+            }
 
             var quickTitle = document.createElement('div');
             quickTitle.className = 'quick-title';
@@ -455,7 +485,6 @@
 
             quick.addEventListener('click', function (e) {
               e.preventDefault();
-              // inner files from manifest are expected in item.files with {name,path}
               if (Array.isArray(item.files) && item.files.length) {
                 currentFolderName = item.name;
                 const inner = item.files.map(function (f) { return { type: 'file', name: f.name, path: './' + f.path }; });
