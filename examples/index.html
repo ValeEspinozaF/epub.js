@@ -201,8 +201,6 @@
 
   <script>
     (async function () {
-      var GITHUB_BOOKS_API = "https://api.github.com/repos/ValeEspinozaF/epub.js/contents/examples/_books?ref=master";
-
       var picker = document.getElementById("book-picker");
       var openMobile = document.getElementById("open-mobile");
       var quickList = document.getElementById("quick-list");
@@ -210,40 +208,6 @@
 
       function buildTarget(path) {
         return "mobile.html?url=" + encodeURIComponent(path);
-      }
-
-      async function discoverBookFiles() {
-        var response = await fetch(GITHUB_BOOKS_API, {
-          headers: {
-            "Accept": "application/vnd.github+json"
-          }
-        });
-
-        if (!response.ok) {
-          throw new Error("Cannot read GitHub _books contents");
-        }
-
-        var items = await response.json();
-        if (!Array.isArray(items)) {
-          throw new Error("Unexpected GitHub response shape");
-        }
-
-        return items
-          .filter(function (item) {
-            return item &&
-              item.type === "file" &&
-              /\.(epub|opf)$/i.test(item.name) &&
-              typeof item.download_url === "string";
-          })
-          .sort(function (a, b) {
-            return a.name.localeCompare(b.name);
-          })
-          .map(function (item) {
-            return {
-              fileName: item.name,
-              path: item.download_url
-            };
-          });
       }
 
       function formatLabel(meta, fileName) {
@@ -318,66 +282,155 @@
         }
       }
 
-      var files = [];
+      async function discoverBookFiles() {
+        // Try local manifest first
+        try {
+          var localResp = await fetch('./_books/manifest.json');
+          if (localResp.ok) {
+            var localItems = await localResp.json();
+            if (Array.isArray(localItems)) {
+              return localItems;
+            }
+          }
+        } catch (e) {
+          // ignore and fall back
+        }
+
+        // fallback to GitHub listing
+        var GITHUB_BOOKS_API = "https://api.github.com/repos/ValeEspinozaF/epub.js/contents/examples/_books?ref=master";
+        var response = await fetch(GITHUB_BOOKS_API, {
+          headers: {
+            "Accept": "application/vnd.github+json"
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error("Cannot read GitHub _books contents");
+        }
+
+        var items = await response.json();
+        if (!Array.isArray(items)) {
+          throw new Error("Unexpected GitHub response shape");
+        }
+
+        return items
+          .filter(function (item) {
+            return item &&
+              item.type === "file" &&
+              /\.(epub|opf)$/i.test(item.name) &&
+              typeof item.download_url === "string";
+          })
+          .sort(function (a, b) {
+            return a.name.localeCompare(b.name);
+          })
+          .map(function (item) {
+            return {
+              type: 'file',
+              name: item.name,
+              path: item.download_url
+            };
+          });
+      }
+
+      var topEntries = [];
       try {
-        files = await discoverBookFiles();
+        topEntries = await discoverBookFiles();
       } catch (error) {
-        renderNoBooks("Could not load books from GitHub repository contents.");
+        renderNoBooks("Could not load books from _books.");
         return;
       }
 
-      if (!files.length) {
-        renderNoBooks("GitHub examples/_books contains no .epub or .opf files.");
+      if (!topEntries.length) {
+        renderNoBooks("No ebooks found in examples/_books.");
         return;
       }
 
-      var entries = await Promise.all(files.map(loadBookEntry));
       openMobile.disabled = false;
 
       if (hint) {
-        hint.textContent = "Found " + entries.length + " ebooks in GitHub examples/_books.";
+        hint.textContent = "Found " + topEntries.length + " items in examples/_books.";
       }
 
-      entries.forEach(function (entry) {
+      async function renderEntries(entries) {
+        quickList.innerHTML = '';
+        picker.innerHTML = '';
 
-        var option = document.createElement("option");
-        option.value = entry.path;
-        option.textContent = entry.label;
-        picker.appendChild(option);
+        for (const item of entries) {
+          if (!item) continue;
 
-        var quick = document.createElement("a");
-        quick.className = "quick-link";
-        quick.href = buildTarget(entry.path);
+          if (item.type === 'file') {
+            const entry = await loadBookEntry({ fileName: item.name, path: item.path });
 
-        if (entry.coverUrl) {
-          var cover = document.createElement("img");
-          cover.className = "quick-cover";
-          cover.src = entry.coverUrl;
-          cover.alt = entry.title + " cover";
-          quick.appendChild(cover);
-        } else {
-          var fallback = document.createElement("div");
-          fallback.className = "quick-cover-fallback";
-          fallback.textContent = "No cover";
-          quick.appendChild(fallback);
+            var option = document.createElement('option');
+            option.value = entry.path;
+            option.textContent = entry.label;
+            picker.appendChild(option);
+
+            var quick = document.createElement('a');
+            quick.className = 'quick-link';
+            quick.href = buildTarget(entry.path);
+
+            if (entry.coverUrl) {
+              var cover = document.createElement('img');
+              cover.className = 'quick-cover';
+              cover.src = entry.coverUrl;
+              cover.alt = entry.title + ' cover';
+              quick.appendChild(cover);
+            } else {
+              var fallback = document.createElement('div');
+              fallback.className = 'quick-cover-fallback';
+              fallback.textContent = 'No cover';
+              quick.appendChild(fallback);
+            }
+
+            var quickTitle = document.createElement('div');
+            quickTitle.className = 'quick-title';
+            quickTitle.textContent = entry.title;
+            quick.appendChild(quickTitle);
+
+            quickList.appendChild(quick);
+          } else if (item.type === 'dir') {
+            var quick = document.createElement('a');
+            quick.className = 'quick-link';
+            quick.href = '#';
+
+            var fallback = document.createElement('div');
+            fallback.className = 'quick-cover-fallback';
+            fallback.textContent = 'Folder';
+            quick.appendChild(fallback);
+
+            var quickTitle = document.createElement('div');
+            quickTitle.className = 'quick-title';
+            quickTitle.textContent = item.name;
+            quick.appendChild(quickTitle);
+
+            quick.addEventListener('click', function (e) {
+              e.preventDefault();
+              // inner files from manifest are expected in item.files with {name,path}
+              if (Array.isArray(item.files) && item.files.length) {
+                const inner = item.files.map(function (f) { return { type: 'file', name: f.name, path: './' + f.path }; });
+                renderEntries(inner);
+              } else {
+                if (hint) hint.textContent = 'Folder is empty or cannot be read.';
+              }
+            });
+
+            quickList.appendChild(quick);
+          }
         }
+      }
 
-        var quickTitle = document.createElement("div");
-        quickTitle.className = "quick-title";
-        quickTitle.textContent = entry.title;
-        quick.appendChild(quickTitle);
-
-        quickList.appendChild(quick);
-      });
+      // initial render
+      renderEntries(topEntries);
 
       function openSelectedBook() {
         var selectedPath = picker.value;
         window.location.href = buildTarget(selectedPath);
       }
 
-      openMobile.addEventListener("click", openSelectedBook);
-      picker.addEventListener("keydown", function (event) {
-        if (event.key === "Enter") {
+      openMobile.addEventListener('click', openSelectedBook);
+      picker.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter') {
           event.preventDefault();
           openSelectedBook();
         }
