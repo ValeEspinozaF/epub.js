@@ -63,6 +63,15 @@
         </div>
       </div>
 
+      <div class="panel-section">
+        <div class="panel-title">Paragraph spacing</div>
+        <div class="settings-controls">
+          <button id="paragraphSpacingMinus" class="settings-btn" aria-label="Decrease paragraph spacing">−</button>
+          <div id="paragraphSpacingValue" class="settings-value">0.4em</div>
+          <button id="paragraphSpacingPlus" class="settings-btn" aria-label="Increase paragraph spacing">+</button>
+        </div>
+      </div>
+
       <button id="settingsResetBtn" class="settings-reset-btn" type="button">Reset</button>
     </div>
 
@@ -119,6 +128,11 @@
       "body": {
         "font-size": "1rem !important",
         "line-height": "1.5 !important"
+      },
+
+      "p, div, h1, h2, h3, h4, h5, h6, li": {
+        "margin-top": "0.4em !important",
+        "margin-bottom": "0.4em !important"
       }
     });
 
@@ -128,8 +142,10 @@
 
     var currentFontSize = 18;
     var currentLineHeight = 1.5;
+    var currentParagraphSpacing = 0.4;
     var fontSizeValueEl = document.getElementById("fontSizeValue");
     var lineHeightValueEl = document.getElementById("lineHeightValue");
+    var paragraphSpacingValueEl = document.getElementById("paragraphSpacingValue");
 
     function applyFontSize(size) {
       currentFontSize = size;
@@ -141,14 +157,25 @@
 
     function applyLineHeight(value) {
       currentLineHeight = value;
-      rendition.themes.override("line-height", currentLineHeight.toFixed(1) + " !important", true);
+      rendition.themes.override("line-height", currentLineHeight.toFixed(1), true);
       if (lineHeightValueEl) {
         lineHeightValueEl.textContent = currentLineHeight.toFixed(1);
       }
     }
 
+    function applyParagraphSpacing(value) {
+      currentParagraphSpacing = value;
+      var spacingCss = "p, div, h1, h2, h3, h4, h5, h6, li { margin-top: " + currentParagraphSpacing.toFixed(1) + "em !important; margin-bottom: " + currentParagraphSpacing.toFixed(1) + "em !important; }";
+      rendition.themes.registerCss("paragraph-spacing", spacingCss);
+      rendition.themes.select("paragraph-spacing");
+      if (paragraphSpacingValueEl) {
+        paragraphSpacingValueEl.textContent = currentParagraphSpacing.toFixed(1) + "em";
+      }
+    }
+
     applyFontSize(currentFontSize);
     applyLineHeight(currentLineHeight);
+    applyParagraphSpacing(currentParagraphSpacing);
 
     var tocBtn = document.getElementById("tocBtn");
     var settingsBtn = document.getElementById("settingsBtn");
@@ -159,6 +186,8 @@
     var fontSizePlusBtn = document.getElementById("fontSizePlus");
     var lineHeightMinusBtn = document.getElementById("lineHeightMinus");
     var lineHeightPlusBtn = document.getElementById("lineHeightPlus");
+    var paragraphSpacingMinusBtn = document.getElementById("paragraphSpacingMinus");
+    var paragraphSpacingPlusBtn = document.getElementById("paragraphSpacingPlus");
     var settingsResetBtn = document.getElementById("settingsResetBtn");
 
     if (homeBtn) {
@@ -206,11 +235,26 @@
       });
     }
 
+    if (paragraphSpacingMinusBtn) {
+      paragraphSpacingMinusBtn.addEventListener("click", function(e) {
+        e.stopPropagation();
+        applyParagraphSpacing(Math.max(0.0, currentParagraphSpacing - 0.1));
+      });
+    }
+
+    if (paragraphSpacingPlusBtn) {
+      paragraphSpacingPlusBtn.addEventListener("click", function(e) {
+        e.stopPropagation();
+        applyParagraphSpacing(Math.min(1.5, currentParagraphSpacing + 0.1));
+      });
+    }
+
     if (settingsResetBtn) {
       settingsResetBtn.addEventListener("click", function(e) {
         e.stopPropagation();
         applyFontSize(18);
         applyLineHeight(1.5);
+        applyParagraphSpacing(0.4);
       });
     }
 
