@@ -45,12 +45,25 @@
     </div>
 
     <div id="settingsPanel" aria-label="Settings controls">
-      <div class="panel-title">Settings</div>
-      <div class="settings-controls">
-        <button id="fontSizeMinus" class="settings-btn" aria-label="Decrease font size">−</button>
-        <div id="fontSizeValue" class="settings-value">18px</div>
-        <button id="fontSizePlus" class="settings-btn" aria-label="Increase font size">+</button>
+      <div class="panel-section">
+        <div class="panel-title">Font size</div>
+        <div class="settings-controls">
+          <button id="fontSizeMinus" class="settings-btn" aria-label="Decrease font size">−</button>
+          <div id="fontSizeValue" class="settings-value">18px</div>
+          <button id="fontSizePlus" class="settings-btn" aria-label="Increase font size">+</button>
+        </div>
       </div>
+
+      <div class="panel-section">
+        <div class="panel-title">Line height</div>
+        <div class="settings-controls">
+          <button id="lineHeightMinus" class="settings-btn" aria-label="Decrease line height">−</button>
+          <div id="lineHeightValue" class="settings-value">1.5</div>
+          <button id="lineHeightPlus" class="settings-btn" aria-label="Increase line height">+</button>
+        </div>
+      </div>
+
+      <button id="settingsResetBtn" class="settings-reset-btn" type="button">Reset</button>
     </div>
 
     <div id="viewer" class="mobile"></div>
@@ -114,7 +127,9 @@
     rendition.themes.override("font-weight", "normal", true);
 
     var currentFontSize = 18;
+    var currentLineHeight = 1.5;
     var fontSizeValueEl = document.getElementById("fontSizeValue");
+    var lineHeightValueEl = document.getElementById("lineHeightValue");
 
     function applyFontSize(size) {
       currentFontSize = size;
@@ -124,7 +139,16 @@
       }
     }
 
+    function applyLineHeight(value) {
+      currentLineHeight = value;
+      rendition.themes.override("line-height", currentLineHeight.toFixed(1) + " !important", true);
+      if (lineHeightValueEl) {
+        lineHeightValueEl.textContent = currentLineHeight.toFixed(1);
+      }
+    }
+
     applyFontSize(currentFontSize);
+    applyLineHeight(currentLineHeight);
 
     var tocBtn = document.getElementById("tocBtn");
     var settingsBtn = document.getElementById("settingsBtn");
@@ -133,6 +157,9 @@
     var settingsPanel = document.getElementById("settingsPanel");
     var fontSizeMinusBtn = document.getElementById("fontSizeMinus");
     var fontSizePlusBtn = document.getElementById("fontSizePlus");
+    var lineHeightMinusBtn = document.getElementById("lineHeightMinus");
+    var lineHeightPlusBtn = document.getElementById("lineHeightPlus");
+    var settingsResetBtn = document.getElementById("settingsResetBtn");
 
     if (homeBtn) {
       homeBtn.addEventListener("click", function(e) {
@@ -162,6 +189,28 @@
       fontSizePlusBtn.addEventListener("click", function(e) {
         e.stopPropagation();
         applyFontSize(Math.min(28, currentFontSize + 1));
+      });
+    }
+
+    if (lineHeightMinusBtn) {
+      lineHeightMinusBtn.addEventListener("click", function(e) {
+        e.stopPropagation();
+        applyLineHeight(Math.max(1.0, currentLineHeight - 0.1));
+      });
+    }
+
+    if (lineHeightPlusBtn) {
+      lineHeightPlusBtn.addEventListener("click", function(e) {
+        e.stopPropagation();
+        applyLineHeight(Math.min(2.0, currentLineHeight + 0.1));
+      });
+    }
+
+    if (settingsResetBtn) {
+      settingsResetBtn.addEventListener("click", function(e) {
+        e.stopPropagation();
+        applyFontSize(18);
+        applyLineHeight(1.5);
       });
     }
 
