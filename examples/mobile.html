@@ -29,6 +29,10 @@
         <h1 id="chapter_title"></h1>
       </div>
 
+      <button id="settingsBtn" aria-label="Open settings">
+        <span class="material-symbols-rounded header-icon">settings</span>
+      </button>
+
       <button id="homeBtn" aria-label="Go to library">
         <span class="material-symbols-rounded header-icon">home</span>
       </button>
@@ -38,6 +42,15 @@
 
     <div id="tocPanel">
       <ul id="toc"></ul>
+    </div>
+
+    <div id="settingsPanel" aria-label="Settings controls">
+      <div class="panel-title">Settings</div>
+      <div class="settings-controls">
+        <button id="fontSizeMinus" class="settings-btn" aria-label="Decrease font size">−</button>
+        <div id="fontSizeValue" class="settings-value">18px</div>
+        <button id="fontSizePlus" class="settings-btn" aria-label="Increase font size">+</button>
+      </div>
     </div>
 
     <div id="viewer" class="mobile"></div>
@@ -82,7 +95,8 @@
       "*": {
         "font-family": "Arial, sans-serif !important",
         "font-size": "inherit !important",
-        "line-height": "inherit !important"
+        "line-height": "inherit !important",
+        "font-weight": "normal !important"
       },
     
       "html": {
@@ -97,12 +111,28 @@
 
     // Force consistent typography even when a book ships aggressive internal CSS.
     rendition.themes.font("Arial, sans-serif");
-    rendition.themes.override("font-size", "18px", true);
+    rendition.themes.override("font-weight", "normal", true);
 
+    var currentFontSize = 18;
+    var fontSizeValueEl = document.getElementById("fontSizeValue");
+
+    function applyFontSize(size) {
+      currentFontSize = size;
+      rendition.themes.override("font-size", currentFontSize + "px", true);
+      if (fontSizeValueEl) {
+        fontSizeValueEl.textContent = currentFontSize + "px";
+      }
+    }
+
+    applyFontSize(currentFontSize);
 
     var tocBtn = document.getElementById("tocBtn");
+    var settingsBtn = document.getElementById("settingsBtn");
     var homeBtn = document.getElementById("homeBtn");
     var tocPanel = document.getElementById("tocPanel");
+    var settingsPanel = document.getElementById("settingsPanel");
+    var fontSizeMinusBtn = document.getElementById("fontSizeMinus");
+    var fontSizePlusBtn = document.getElementById("fontSizePlus");
 
     if (homeBtn) {
       homeBtn.addEventListener("click", function(e) {
@@ -111,10 +141,37 @@
       });
     }
 
+    if (settingsBtn && settingsPanel) {
+      settingsBtn.addEventListener("click", function(e) {
+        e.stopPropagation();
+        settingsPanel.classList.toggle("open");
+        if (tocPanel) {
+          tocPanel.classList.remove("open");
+        }
+      });
+    }
+
+    if (fontSizeMinusBtn) {
+      fontSizeMinusBtn.addEventListener("click", function(e) {
+        e.stopPropagation();
+        applyFontSize(Math.max(12, currentFontSize - 1));
+      });
+    }
+
+    if (fontSizePlusBtn) {
+      fontSizePlusBtn.addEventListener("click", function(e) {
+        e.stopPropagation();
+        applyFontSize(Math.min(28, currentFontSize + 1));
+      });
+    }
+
     if (tocBtn && tocPanel) {
       tocBtn.addEventListener("click", function(e) {
-        e.stopPropagation(); 
+        e.stopPropagation();
         tocPanel.classList.toggle("open");
+        if (settingsPanel) {
+          settingsPanel.classList.remove("open");
+        }
       });
 
       tocPanel.addEventListener("click", function(e) {
@@ -124,13 +181,23 @@
       tocPanel.addEventListener("touchmove", function(e) {
         e.stopPropagation();
       });
+    }
 
-      document.addEventListener("click", function(e) {
-        if (!tocPanel.contains(e.target) && !tocBtn.contains(e.target)) {
+    document.addEventListener("click", function(e) {
+      var clickedInsideToc = tocPanel && tocPanel.contains(e.target);
+      var clickedInsideSettings = settingsPanel && settingsPanel.contains(e.target);
+      var clickedSettingsBtn = settingsBtn && settingsBtn.contains(e.target);
+      var clickedTocBtn = tocBtn && tocBtn.contains(e.target);
+
+      if (!clickedInsideToc && !clickedInsideSettings && !clickedSettingsBtn && !clickedTocBtn) {
+        if (tocPanel) {
           tocPanel.classList.remove("open");
         }
-      });
-    }
+        if (settingsPanel) {
+          settingsPanel.classList.remove("open");
+        }
+      }
+    });
 
 
     function tocIsOpen() {
