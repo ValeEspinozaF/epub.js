@@ -298,7 +298,8 @@
     }
 
 
-    rendition.display(currentSectionIndex);
+    var savedCfi = localStorage.getItem("epub-last-location");
+    rendition.display(savedCfi || currentSectionIndex);
 
     book.ready.then(function() {
 
@@ -370,6 +371,11 @@
 
     rendition.on("relocated", function(location){
       console.log(location);
+      
+      // Save the exact reading position
+      if (location && location.start && location.start.cfi) {
+        localStorage.setItem("epub-last-location", location.start.cfi);
+      }
 
       var next = book.package.metadata.direction === "rtl" ?  document.getElementById("prev") : document.getElementById("next");
       var prev = book.package.metadata.direction === "rtl" ?  document.getElementById("next") : document.getElementById("prev");
