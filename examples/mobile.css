@@ -23,6 +23,7 @@ body {
   top: 0;
   /* height: 20px; */
   z-index: 5000;
+  transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
 #header-text {
@@ -391,16 +392,14 @@ html, body, #app {
   display: none;
 }
 
-#header {
-  transition: transform 0.3s ease, opacity 0.3s ease;
-}
-
 .hide-header #header {
-  display: none;
+  transform: translateY(-100%);
+  opacity: 0;
 }
 
 .hide-header #footer {
-  display: none;
+  transform: translateY(100%);
+  opacity: 0;
 }
 
 /* .hide-header #centerToggle {
